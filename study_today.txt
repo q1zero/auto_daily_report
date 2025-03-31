@@ -1,50 +1,123 @@
-<正文>
+<月度计划：2025-03>
 
-## 分组函数与原生查询
-- **分组函数**：使用`annotate()`与`values()`结合来进行分组计算，如计算不同性别学生的平均语文成绩。
-  ```python
-  avg_chinese = Student.objects.values("gender").annotate(avg_chinese=Avg("chinese"))
-  ```
-- **原生SQL查询**：使用`raw()`可以执行直接的SQL语句，实现原生查询。
-  ```python
-  ret = Student.objects.raw("SELECT gender, AVG(chinese) FROM student GROUP BY gender")
-  ```
+<2025-03-27>
+今天学习了Django ORM关联模型的基础知识：
 
-## 修改记录
-1. **基于模型对象的修改**：通过获取特定的模型对象，修改其属性，然后调用`save()`保存修改。
-   ```python
-   stu = Student.objects.get(name="李四")
-   stu.age = 20
-   stu.save()
-   ```
-2. **使用QuerySet的`update`方法**：一次性更新符合条件的多条记录，例如使用`F`表达式修改语文成绩。
-   ```python
-   Student.objects.filter(gender=0).update(chinese=F("chinese")+10)
-   ```
+模型关系类型回顾：
 
-## 删除记录
-1. **基于模型类对象的删除**：获取模型对象然后调用`delete()`删除。
-   ```python
-   stu = Student.objects.get(id=1)
-   stu.delete()
-   ```
-2. **使用QuerySet的`delete`方法**：批量删除符合条件的记录。
-   ```python
-   Student.objects.filter(gender=0).delete()
-   ```
+一对多关系(ForeignKey)
 
-## 创建关联模型
-- **一对多**：在"多"侧的模型中添加ForeignKey。
-- **多对多**：通过创建第三张关系表来建立关联。
-- **一对一**：在任意一张表中添加OneToOneField。
-  示例中，Student与Course（多对多）、ClassInfo（一对多）、StudentDetail（一对一）之间的关系。
+多对多关系(ManyToManyField)
 
-## 关联添加
-虽然文中没有详细介绍如何添加关联，但一般来说，添加关联时需要根据具体的模型关系进行操作。例如，对于多对多关系，可以使用`add()`方法添加关联项：
+一对一关系(OneToOneField)
 
-```python
-# 假设course为某门课程，student为某个学生
-student.courses.add(course)
-```
+关联添加操作：
 
-</正文>
+一对多关系添加：直接指定对象和使用ID添加
+
+多对多关系添加：add()方法和set()方法
+
+一对一关系添加：直接指定和后续关联
+
+实践练习：
+
+创建了班级和学生模型并实现关联
+
+为学生添加详细信息（一对一）
+
+为学生选课（多对多）
+
+关联字段参数学习：
+
+on_delete选项
+
+related_name设置
+
+null和blank参数区别
+
+明天计划学习关联查询和修改操作。
+</2025-03-27>
+
+<2025-03-28>
+今天学习了Django ORM关联查询和修改：
+
+正向和反向查询：
+
+正向查询：从"多"到"一"的访问（student.class_info）
+
+反向查询：从"一"到"多"的访问（class_obj.students.all()）
+
+一对一反向查询（detail.student）
+
+关联查询(join)：
+
+select_related：通过SQL JOIN优化外键和一对一查询
+
+prefetch_related：优化多对多和反向外键查询
+
+两者结合使用的复杂场景
+
+基于双下划线的关联查询：
+
+跨表过滤：class_info__college="计算机学院"
+
+嵌套关系查询：student_detail__address__contains="北京"
+
+使用distinct()避免重复结果
+
+关联修改：
+
+一对多关系修改：更换学生班级
+
+多对多关系修改：add(), remove(), clear(), set()方法
+
+关联删除和on_delete选项影响
+
+下周一计划学习高级查询和性能优化技巧。
+</2025-03-28>
+
+<2025-03-31>
+今天学习了Django ORM高级查询和性能优化：
+
+高级关联查询：
+
+跨关系复杂查询：多层级过滤条件组合
+
+聚合和分组：使用Count, Avg等聚合函数
+
+使用Q对象构建OR条件查询
+
+性能优化技巧：
+
+预加载相关对象：select_related和prefetch_related
+
+延迟加载：defer()和only()方法
+
+查询优化：values()和values_list()仅获取必要字段
+
+批量操作：
+
+bulk_create()批量创建对象
+
+bulk_update()批量更新字段
+
+update()直接执行SQL更新
+
+事务管理：
+
+@transaction.atomic装饰器
+
+with transaction.atomic()上下文管理器
+
+保证数据一致性的实践
+
+查询日志分析：
+
+使用Django Debug Toolbar分析查询性能
+
+N+1查询问题识别与解决
+
+查询优化实践案例分析
+
+下一步计划学习Django REST Framework与ORM的结合使用。
+</2025-03-31>
